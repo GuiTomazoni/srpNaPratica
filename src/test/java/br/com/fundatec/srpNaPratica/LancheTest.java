@@ -26,7 +26,7 @@ public class LancheTest {
 		assertEquals("Xis-Coração", lanche.getNome());
 		assertEquals(new Double(18.00), lanche.getPreco());
 		assertEquals(Bairro.CAMPO_NOVO, pedido.getBairro());
-		assertEquals(false, desconto.getDesconto());
+		assertEquals(false, pedido.possuiDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 
 	}
@@ -42,30 +42,31 @@ public class LancheTest {
 		double valorFinalEsperado = calculaValorTotalEsperado(pedido);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(true, desconto.getDesconto());
+		assertEquals(true, pedido.possuiDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 	
 	@Test
-	public void deveManterOPrecoCasoApliqueDescontoSemPossuir() {
-		Desconto desconto = new Desconto(false);
+	public void deveManterApenasUmDescontoCasoTentemAplicarNovamente() {
+		Desconto desconto = new Desconto(true);
 		Registradora registradora = new Registradora();
 		Lanche lanche = new Lanche("Xis-Coração", 18.00);
 		Pedido pedido = new Pedido(lanche, desconto, Bairro.VILA_NOVA);
 	
-		double valorCalculado = registradora.calculaTotal(pedido);
+		double valorCalculado = registradora.calculaTotal(pedido) - desconto.aplicar(pedido);
 		double valorFinalEsperado = calculaValorTotalEsperado(pedido);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(false, desconto.getDesconto());
+		assertEquals(true, pedido.possuiDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 
 	private double calculaValorTotalEsperado(Pedido pedido) {
 		Desconto desconto = new Desconto();
+		pedido.getDesconto().setAplicado(false);
 		double entregaEsperada = calculaValorDeEntregaEsperado(pedido.getBairro());
 		double valorTotalEsperado = entregaEsperada + pedido.getLanche().getPreco();
-		if (pedido.getDesconto()) {
+		if (pedido.possuiDesconto()) {
 			return valorTotalEsperado = entregaEsperada + desconto.aplicar(pedido);
 		} else {
 			return valorTotalEsperado;

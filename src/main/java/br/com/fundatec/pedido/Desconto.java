@@ -21,15 +21,18 @@ public class Desconto {
 		return aplicado;
 	}
 	
+	public void setAplicado(boolean aplicado) {
+		this.aplicado = aplicado;
+	}
+	
 	public double aplicar(Pedido pedido) {
 		double valorFinal = 0.0;
-		if(pedido.getDesconto() && !aplicado) {
-			aplicado = true;
+		if(pedido.possuiDesconto() && !pedido.getDesconto().getAplicado()) {
+			pedido.getDesconto().setAplicado(true);
 			valorFinal = (pedido.getLanche().getPreco() - 10.0);
 			return valorFinal;
-		}else {
-			return valorFinal = pedido.getLanche().getPreco();
 		}
+		return 0.0;
 	}
 	
 }

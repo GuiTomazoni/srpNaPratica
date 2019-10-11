@@ -13,7 +13,7 @@ public class Registradora {
 		valorEntrega = tabelaDeEntrega.para(pedido.getBairro());
 		valorTotal = pedido.getLanche().getPreco() + valorEntrega;
 		
-		if(pedido.getDesconto()) {
+		if(pedido.possuiDesconto()) {
 			valorTotal = desconto.aplicar(pedido) + valorEntrega;
 			return valorTotal;
 		}else {

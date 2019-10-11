@@ -20,20 +20,16 @@ public class Pedido {
 		this.lanche = lanche;
 	}
 
-	public boolean getDesconto() {
+	public boolean possuiDesconto() {
 		return desconto.getDesconto();
 	}
-
-	public void setDesconto(Desconto desconto) {
-		this.desconto = desconto;
+	
+	public Desconto getDesconto() {
+		return desconto;
 	}
 
 	public Bairro getBairro() {
 		return bairro;
-	}
-
-	public void setBairro(Bairro bairro) {
-		this.bairro = bairro;
 	}
 
 }
