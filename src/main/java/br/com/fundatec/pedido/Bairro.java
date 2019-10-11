@@ -1,4 +1,4 @@
-package br.com.fundatec.srpnapratica;
+package br.com.fundatec.pedido;
 
 public enum Bairro {
 

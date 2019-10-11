@@ -1,6 +1,6 @@
 package br.com.fundatec.tabeladeentrega;
 
-import br.com.fundatec.srpnapratica.Bairro;
+import br.com.fundatec.pedido.Bairro;
 
 public class TabelaDeEntrega {
 

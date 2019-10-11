@@ -1,4 +1,4 @@
-package br.com.fundatec.srpnapratica;
+package br.com.fundatec.pedido;
 
 import br.com.fundatec.tabeladeentrega.TabelaDeEntrega;
 
@@ -7,9 +7,9 @@ public class Lanche {
 	private String nome;
 	private Double preco;
 	private Bairro bairro;
-	private boolean desconto;
+	private Desconto desconto;
 
-	public Lanche(String nome, Double preco, Bairro bairro, boolean desconto) {
+	public Lanche(String nome, Double preco, Bairro bairro, Desconto desconto) {
 		this.nome = nome;
 		this.preco = preco;
 		this.bairro = bairro;
@@ -28,16 +28,8 @@ public class Lanche {
 		return bairro;
 	}
 	
-	public boolean getDesconto() {
+	public Desconto getDesconto() {
 		return desconto;
-	}
-
-	public Double aplicaDesconto() {
-		if (desconto) {
-			return this.preco - (this.preco * 0.1);
-		} else {
-			return 0.0;
-		}
 	}
 
 	public Double calculaTotal(Lanche lanche) {
@@ -49,8 +41,8 @@ public class Lanche {
 		valorEntrega = tabelaDeEntrega.para(bairro);
 		valorTotal = lanche.getPreco() + valorEntrega;
 
-		if (lanche.desconto) {
-			return valorTotal - lanche.aplicaDesconto();
+		if (lanche.getDesconto().getDesconto()) {
+			return valorTotal - desconto.aplicaDesconto();
 		}
 
 		return valorTotal;

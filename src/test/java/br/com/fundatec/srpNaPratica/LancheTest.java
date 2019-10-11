@@ -4,15 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import br.com.fundatec.srpnapratica.Bairro;
-import br.com.fundatec.srpnapratica.Lanche;
+import br.com.fundatec.pedido.Bairro;
+import br.com.fundatec.pedido.Desconto;
+import br.com.fundatec.pedido.Lanche;
 import br.com.fundatec.tabeladeentrega.TabelaDeEntrega;
 
 public class LancheTest {
 
 	@Test
 	public void deveRegistrarUmPedido() {
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAMPO_NOVO, false);
+		Desconto desconto = new Desconto(false);
+		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAMPO_NOVO, desconto);
 
 		double valorCalculado = lanche.calculaTotal(lanche);
 		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
@@ -20,42 +22,42 @@ public class LancheTest {
 		assertEquals("Xis-Coração", lanche.getNome());
 		assertEquals(new Double(18.00), lanche.getPreco());
 		assertEquals(Bairro.CAMPO_NOVO, lanche.getBairro());
-		assertEquals(false, lanche.getDesconto());
+		assertEquals(false, lanche.getDesconto().getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 
 	}
 
 	@Test
 	public void deveAplicarDesconto() {
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.VILA_NOVA, true);
-		lanche.aplicaDesconto();
+		Desconto desconto = new Desconto(true);
+		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.VILA_NOVA, desconto);
 	
 		double valorCalculado = lanche.calculaTotal(lanche);
 		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(true, lanche.getDesconto());
+		assertEquals(true, lanche.getDesconto().getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 	
 	@Test
 	public void deveManterOPrecoCasoApliqueDescontoSemPossuir() {
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAVALHADA, false);
-		lanche.aplicaDesconto();
+		Desconto desconto = new Desconto(false);
+		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAVALHADA, desconto);
 	
 		double valorCalculado = lanche.calculaTotal(lanche);
 		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(false, lanche.getDesconto());
+		assertEquals(false, lanche.getDesconto().getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 
 	private double calculaValorTotalEsperado(Lanche lanche) {
 		double entregaEsperada = calculaValorDeEntregaEsperado(lanche.getBairro());
 		double valorTotalEsperado = entregaEsperada + lanche.getPreco();
-		if (lanche.getDesconto()) {
-			return valorTotalEsperado = valorTotalEsperado - lanche.aplicaDesconto();
+		if (lanche.getDesconto().getDesconto()) {
+			return valorTotalEsperado = valorTotalEsperado - lanche.calculaTotal(lanche);
 		} else {
 			return valorTotalEsperado;
 		}
