@@ -7,6 +7,8 @@ import org.junit.Test;
 import br.com.fundatec.pedido.Bairro;
 import br.com.fundatec.pedido.Desconto;
 import br.com.fundatec.pedido.Lanche;
+import br.com.fundatec.pedido.Pedido;
+import br.com.fundatec.pedido.Registradora;
 import br.com.fundatec.tabeladeentrega.TabelaDeEntrega;
 
 public class LancheTest {
@@ -14,15 +16,17 @@ public class LancheTest {
 	@Test
 	public void deveRegistrarUmPedido() {
 		Desconto desconto = new Desconto(false);
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAMPO_NOVO, desconto);
+		Registradora registradora = new Registradora();
+		Lanche lanche = new Lanche("Xis-Coração", 18.00);
+		Pedido pedido = new Pedido(lanche, desconto, Bairro.CAMPO_NOVO);
 
-		double valorCalculado = lanche.calculaTotal(lanche);
-		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
+		double valorCalculado = registradora.calculaTotal(pedido);
+		double valorFinalEsperado = calculaValorTotalEsperado(pedido);
 
 		assertEquals("Xis-Coração", lanche.getNome());
 		assertEquals(new Double(18.00), lanche.getPreco());
-		assertEquals(Bairro.CAMPO_NOVO, lanche.getBairro());
-		assertEquals(false, lanche.getDesconto().getDesconto());
+		assertEquals(Bairro.CAMPO_NOVO, pedido.getBairro());
+		assertEquals(false, desconto.getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 
 	}
@@ -30,34 +34,39 @@ public class LancheTest {
 	@Test
 	public void deveAplicarDesconto() {
 		Desconto desconto = new Desconto(true);
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.VILA_NOVA, desconto);
+		Registradora registradora = new Registradora();
+		Lanche lanche = new Lanche("Xis-Coração", 18.00);
+		Pedido pedido = new Pedido(lanche, desconto, Bairro.CAVALHADA);
 	
-		double valorCalculado = lanche.calculaTotal(lanche);
-		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
+		double valorCalculado = registradora.calculaTotal(pedido);
+		double valorFinalEsperado = calculaValorTotalEsperado(pedido);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(true, lanche.getDesconto().getDesconto());
+		assertEquals(true, desconto.getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 	
 	@Test
 	public void deveManterOPrecoCasoApliqueDescontoSemPossuir() {
 		Desconto desconto = new Desconto(false);
-		Lanche lanche = new Lanche("Xis-Coração", 18.00, Bairro.CAVALHADA, desconto);
+		Registradora registradora = new Registradora();
+		Lanche lanche = new Lanche("Xis-Coração", 18.00);
+		Pedido pedido = new Pedido(lanche, desconto, Bairro.VILA_NOVA);
 	
-		double valorCalculado = lanche.calculaTotal(lanche);
-		double valorFinalEsperado = calculaValorTotalEsperado(lanche);
+		double valorCalculado = registradora.calculaTotal(pedido);
+		double valorFinalEsperado = calculaValorTotalEsperado(pedido);
 
 		assertEquals("Xis-Coração", lanche.getNome());
-		assertEquals(false, lanche.getDesconto().getDesconto());
+		assertEquals(false, desconto.getDesconto());
 		assertEquals(valorFinalEsperado, valorCalculado, 0);
 	}
 
-	private double calculaValorTotalEsperado(Lanche lanche) {
-		double entregaEsperada = calculaValorDeEntregaEsperado(lanche.getBairro());
-		double valorTotalEsperado = entregaEsperada + lanche.getPreco();
-		if (lanche.getDesconto().getDesconto()) {
-			return valorTotalEsperado = valorTotalEsperado - lanche.calculaTotal(lanche);
+	private double calculaValorTotalEsperado(Pedido pedido) {
+		Desconto desconto = new Desconto();
+		double entregaEsperada = calculaValorDeEntregaEsperado(pedido.getBairro());
+		double valorTotalEsperado = entregaEsperada + pedido.getLanche().getPreco();
+		if (pedido.getDesconto()) {
+			return valorTotalEsperado = entregaEsperada + desconto.aplicar(pedido);
 		} else {
 			return valorTotalEsperado;
 		}
